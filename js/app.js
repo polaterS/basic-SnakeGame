@@ -3,7 +3,10 @@ class App {
         this.singlePlayerBtn = document.getElementById('singlePlayerBtn');
         this.multiPlayerBtn = document.getElementById('multiPlayerBtn');
         this.leaderboardBtn = document.getElementById('leaderboardBtn');
+        this.mainMenu = document.getElementById('mainMenu');
         this.mapScreen = document.getElementById('mapScreen');
+        this.multiplayerMenu = document.getElementById('multiplayerMenu');
+        this.leaderboardScreen = document.getElementById('leaderboardScreen');
         this.mapSelection = document.getElementById('mapSelection');
         this.startGameWithMap = document.getElementById('startGameWithMap');
         this.backToMenuFromMap = document.getElementById('backToMenuFromMap');
@@ -19,50 +22,94 @@ class App {
     }
 
     setupEventListeners() {
-        this.singlePlayerBtn.addEventListener('click', () => {
-            document.getElementById('mainMenu').classList.add('hidden');
-            this.mapScreen.classList.remove('hidden');
-        });
+        if (this.singlePlayerBtn) {
+            this.singlePlayerBtn.addEventListener('click', () => {
+                console.log('Tek Oyunculu butonuna tıklandı');
+                this.mainMenu.classList.add('hidden');
+                this.mapScreen.classList.remove('hidden');
+                if (window.audioManager) {
+                    window.audioManager.play('button');
+                }
+            });
+        }
 
-        this.multiPlayerBtn.addEventListener('click', () => {
-            document.getElementById('mainMenu').classList.add('hidden');
-            document.getElementById('multiplayerMenu').classList.remove('hidden');
-        });
+        if (this.multiPlayerBtn) {
+            this.multiPlayerBtn.addEventListener('click', () => {
+                console.log('Çok Oyunculu butonuna tıklandı');
+                this.mainMenu.classList.add('hidden');
+                this.multiplayerMenu.classList.remove('hidden');
+                if (window.audioManager) {
+                    window.audioManager.play('button');
+                }
+            });
+        }
 
-        this.leaderboardBtn.addEventListener('click', () => {
-            document.getElementById('mainMenu').classList.add('hidden');
-            document.getElementById('leaderboardScreen').classList.remove('hidden');
-            this.leaderboardManager.updateLeaderboardDisplay();
-        });
+        if (this.leaderboardBtn) {
+            this.leaderboardBtn.addEventListener('click', () => {
+                console.log('Liderlik Tablosu butonuna tıklandı');
+                this.mainMenu.classList.add('hidden');
+                this.leaderboardScreen.classList.remove('hidden');
+                this.leaderboardManager.updateLeaderboardDisplay();
+                if (window.audioManager) {
+                    window.audioManager.play('button');
+                }
+            });
+        }
 
-        this.startGameWithMap.addEventListener('click', () => {
-            this.mapScreen.classList.add('hidden');
-            const game = new Game(false, null, this.selectedMap);
-            game.start();
-        });
+        if (this.startGameWithMap) {
+            this.startGameWithMap.addEventListener('click', () => {
+                console.log('Oyun başlatılıyor...');
+                this.mapScreen.classList.add('hidden');
+                const game = new Game(false, null, this.selectedMap);
+                game.start();
+                if (window.audioManager) {
+                    window.audioManager.play('button');
+                }
+            });
+        }
 
-        this.backToMenuFromMap.addEventListener('click', () => {
-            this.mapScreen.classList.add('hidden');
-            document.getElementById('mainMenu').classList.remove('hidden');
-        });
+        if (this.backToMenuFromMap) {
+            this.backToMenuFromMap.addEventListener('click', () => {
+                console.log('Ana menüye dönülüyor...');
+                this.mapScreen.classList.add('hidden');
+                this.mainMenu.classList.remove('hidden');
+                if (window.audioManager) {
+                    window.audioManager.play('button');
+                }
+            });
+        }
 
-        this.backToMenuFromLeaderboard.addEventListener('click', () => {
-            document.getElementById('leaderboardScreen').classList.add('hidden');
-            document.getElementById('mainMenu').classList.remove('hidden');
-        });
+        if (this.backToMenuFromLeaderboard) {
+            this.backToMenuFromLeaderboard.addEventListener('click', () => {
+                console.log('Ana menüye dönülüyor...');
+                this.leaderboardScreen.classList.add('hidden');
+                this.mainMenu.classList.remove('hidden');
+                if (window.audioManager) {
+                    window.audioManager.play('button');
+                }
+            });
+        }
 
-        // Liderlik tablosu filtre değişikliklerini dinle
-        document.getElementById('leaderboardType').addEventListener('change', () => {
-            this.leaderboardManager.updateLeaderboardDisplay();
-        });
+        const leaderboardType = document.getElementById('leaderboardType');
+        const leaderboardMap = document.getElementById('leaderboardMap');
 
-        document.getElementById('leaderboardMap').addEventListener('change', () => {
-            this.leaderboardManager.updateLeaderboardDisplay();
-        });
+        if (leaderboardType) {
+            leaderboardType.addEventListener('change', () => {
+                this.leaderboardManager.updateLeaderboardDisplay();
+            });
+        }
+
+        if (leaderboardMap) {
+            leaderboardMap.addEventListener('change', () => {
+                this.leaderboardManager.updateLeaderboardDisplay();
+            });
+        }
     }
 
     setupLeaderboardMapOptions() {
         const mapSelect = document.getElementById('leaderboardMap');
+        if (!mapSelect) return;
+
         const mapNames = this.mapManager.getMapNames();
         
         mapNames.forEach(mapName => {
@@ -75,6 +122,8 @@ class App {
     }
 
     createMapSelection() {
+        if (!this.mapSelection) return;
+
         const mapNames = this.mapManager.getMapNames();
         
         this.mapSelection.innerHTML = mapNames.map(mapName => {
@@ -89,17 +138,13 @@ class App {
             `;
         }).join('');
 
-        // Harita seçim event listener'ları
         this.mapSelection.querySelectorAll('.map-card').forEach(card => {
             card.addEventListener('click', () => {
-                // Önceki seçimi kaldır
                 document.querySelector('.map-card.selected')?.classList.remove('selected');
                 
-                // Yeni seçimi işaretle
                 card.classList.add('selected');
                 this.selectedMap = card.dataset.map;
 
-                // Ses efekti
                 if (window.audioManager) {
                     window.audioManager.play('button');
                 }
@@ -108,7 +153,7 @@ class App {
     }
 }
 
-// App instance will be created when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM yüklendi, uygulama başlatılıyor...');
     window.app = new App();
 }); 
