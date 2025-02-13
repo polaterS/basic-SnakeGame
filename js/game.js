@@ -270,5 +270,12 @@ class Game {
         
         finalScore.textContent = `Skorunuz: ${this.score}`;
         gameOverScreen.classList.add('visible');
+
+        // Skoru liderlik tablosuna ekle
+        if (window.userManager && window.leaderboardManager) {
+            const username = window.userManager.getUsername();
+            const mapName = window.app ? window.app.selectedMap : 'CLASSIC';
+            window.leaderboardManager.addScore(this.score, username, mapName);
+        }
     }
 } 

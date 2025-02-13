@@ -17,6 +17,9 @@ class App {
         this.mapManager = new MapManager();
         this.leaderboardManager = new LeaderboardManager();
         
+        // LeaderboardManager'ı global scope'a ekle
+        window.leaderboardManager = this.leaderboardManager;
+        
         this.game = null;
         
         this.setupEventListeners();
