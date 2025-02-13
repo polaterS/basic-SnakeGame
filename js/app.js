@@ -17,9 +17,12 @@ class App {
         this.mapManager = new MapManager();
         this.leaderboardManager = new LeaderboardManager();
         
+        this.game = null;
+        
         this.setupEventListeners();
         this.createMapSelection();
         this.setupLeaderboardMapOptions();
+        console.log('DOM yüklendi, uygulama başlatılıyor...');
     }
 
     setupEventListeners() {
@@ -61,9 +64,9 @@ class App {
             this.startGameWithMap.addEventListener('click', () => {
                 console.log('Oyun başlatılıyor...');
                 this.mapScreen.classList.add('hidden');
-                this.gameScreen.classList.remove('hidden');
-                const game = new Game();
-                game.start();
+                
+                this.game = new Game(false);
+                this.game.start();
                 if (window.audioManager) {
                     window.audioManager.play('button');
                 }
@@ -156,6 +159,5 @@ class App {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM yüklendi, uygulama başlatılıyor...');
     window.app = new App();
 }); 

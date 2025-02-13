@@ -14,7 +14,7 @@ class Game {
         this.food = this.createFood();
         this.direction = 'RIGHT';
         this.score = 0;
-        this.gameLoop = null;
+        this.animationFrame = null;
         this.lastRenderTime = 0;
         
         this.colors = {
@@ -31,6 +31,8 @@ class Game {
             }
         };
 
+        // gameLoop'u this context'ine bağla
+        this.gameLoop = this.gameLoop.bind(this);
         this.setupEventListeners();
     }
 
@@ -216,7 +218,7 @@ class Game {
             this.lastRenderTime = currentTime;
         }
 
-        this.animationFrame = requestAnimationFrame(this.gameLoop.bind(this));
+        this.animationFrame = requestAnimationFrame(this.gameLoop);
     }
 
     start() {
@@ -228,6 +230,7 @@ class Game {
     stop() {
         if (this.animationFrame) {
             cancelAnimationFrame(this.animationFrame);
+            this.animationFrame = null;
         }
     }
 
