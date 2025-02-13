@@ -31,8 +31,6 @@ class Game {
             }
         };
 
-        // gameLoop'u this context'ine bağla
-        this.gameLoop = this.gameLoop.bind(this);
         this.setupEventListeners();
     }
 
@@ -206,7 +204,7 @@ class Game {
     }
 
     gameLoop(currentTime) {
-        if (this.lastRenderTime === 0) {
+        if (!this.lastRenderTime) {
             this.lastRenderTime = currentTime;
         }
 
@@ -218,12 +216,13 @@ class Game {
             this.lastRenderTime = currentTime;
         }
 
-        this.animationFrame = requestAnimationFrame(this.gameLoop);
+        this.animationFrame = requestAnimationFrame((time) => this.gameLoop(time));
     }
 
     start() {
         document.getElementById('gameScreen').classList.remove('hidden');
         document.getElementById('score').textContent = 'Skor: 0';
+        this.lastRenderTime = 0;
         this.gameLoop(0);
     }
 
