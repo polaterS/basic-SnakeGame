@@ -77,12 +77,14 @@
 
     <!-- Oyun Ekranı -->
     <div id="gameScreen" class="screen hidden">
-        <div class="game-header">
-            <span id="playerInfo"></span>
-            <span id="score">Skor: 0</span>
+        <div class="game-container">
+            <div class="game-header">
+                <span id="playerInfo"></span>
+                <span id="score">Skor: 0</span>
+            </div>
+            <canvas id="gameCanvas"></canvas>
+            <button id="exitGame" class="exit-button">Oyundan Çık</button>
         </div>
-        <canvas id="gameCanvas"></canvas>
-        <button id="exitGame" class="exit-button">Oyundan Çık</button>
     </div>
 
     <!-- Liderlik Tablosu Ekranı -->
