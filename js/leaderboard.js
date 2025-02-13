@@ -133,88 +133,56 @@ class LeaderboardManager {
     }
 }
 
-// Liderlik tablosu için stil
-const style = document.createElement('style');
-style.textContent = `
-.leaderboard-screen {
-    max-height: 80vh;
-    overflow-y: auto;
-}
+const leaderboardStyle = `
+    .leaderboard-container {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        max-width: 600px;
+        margin: 0 auto;
+    }
 
-.leaderboard-controls {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
+    .leaderboard-filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
 
-.leaderboard-content {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 1rem;
-}
+    .leaderboard-filters select {
+        flex: 1;
+        padding: 8px;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
-.leaderboard-item {
-    display: grid;
-    grid-template-columns: 50px 2fr 1fr 1fr 1fr;
-    padding: 0.5rem;
-    border-radius: 5px;
-    margin-bottom: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    transition: transform 0.2s;
-}
+    .leaderboard-content {
+        max-height: 400px;
+        overflow-y: auto;
+    }
 
-.leaderboard-item:hover {
-    transform: translateX(5px);
-}
+    .leaderboard-entry {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-.leaderboard-item.top-1 {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
-}
+    .leaderboard-rank {
+        width: 40px;
+        font-weight: bold;
+    }
 
-.leaderboard-item.top-2 {
-    background: linear-gradient(45deg, #C0C0C0, #A9A9A9);
-}
+    .leaderboard-username {
+        flex: 1;
+    }
 
-.leaderboard-item.top-3 {
-    background: linear-gradient(45deg, #CD7F32, #8B4513);
-}
-
-.rank {
-    font-weight: bold;
-}
-
-.username {
-    font-weight: 500;
-}
-
-.score {
-    text-align: right;
-}
-
-.map {
-    text-align: center;
-    font-size: 0.9em;
-}
-
-.date {
-    text-align: right;
-    font-size: 0.9em;
-    opacity: 0.8;
-}
-
-.no-scores {
-    text-align: center;
-    padding: 2rem;
-    opacity: 0.5;
-}
-
-select {
-    padding: 0.5rem;
-    border-radius: 5px;
-    background: var(--bg-color);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-}
+    .leaderboard-score {
+        width: 100px;
+        text-align: right;
+    }
 `;
 
-document.head.appendChild(style); 
+document.getElementById('dynamicStyles').textContent += leaderboardStyle; 

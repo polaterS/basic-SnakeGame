@@ -1,98 +1,51 @@
 class AudioManager {
     constructor() {
-        this.sounds = {};
-        this.music = null;
-        this.isMuted = localStorage.getItem('snakeGameMuted') === 'true';
-        this.volume = parseFloat(localStorage.getItem('snakeGameVolume')) || 0.5;
-        
-        this.loadSounds();
-        this.setupControls();
-    }
-
-    loadSounds() {
-        // Oyun sesleri
         this.sounds = {
+            button: new Audio('sounds/button.mp3'),
             eat: new Audio('sounds/eat.mp3'),
             collision: new Audio('sounds/collision.mp3'),
             powerup: new Audio('sounds/powerup.mp3'),
-            button: new Audio('sounds/button.mp3')
+            background: new Audio('sounds/background.mp3')
         };
 
-        // Arkaplan müziği
-        this.music = new Audio('sounds/background.mp3');
-        this.music.loop = true;
+        // Arka plan müziği için ayarlar
+        this.sounds.background.loop = true;
+        this.sounds.background.volume = 0.3;
 
-        // Tüm seslere volume ayarı
+        // Ses efektleri için varsayılan ses seviyesi
         Object.values(this.sounds).forEach(sound => {
-            sound.volume = this.volume;
+            if (sound !== this.sounds.background) {
+                sound.volume = 0.5;
+            }
         });
-        this.music.volume = this.volume * 0.5; // Müzik biraz daha kısık
-    }
 
-    setupControls() {
-        // Ses kontrol butonlarını oluştur
-        const controls = document.createElement('div');
-        controls.className = 'audio-controls';
-        controls.innerHTML = `
-            <button id="toggleSound" class="icon-button">
-                ${this.isMuted ? '🔇' : '🔊'}
-            </button>
-            <input type="range" id="volumeSlider" 
-                min="0" max="1" step="0.1" 
-                value="${this.volume}">
-        `;
-
-        document.body.appendChild(controls);
-
-        // Event listener'ları ekle
-        const toggleBtn = document.getElementById('toggleSound');
-        const volumeSlider = document.getElementById('volumeSlider');
-
-        toggleBtn.addEventListener('click', () => this.toggleMute());
-        volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value));
+        // Ses hatalarını yönet
+        Object.values(this.sounds).forEach(sound => {
+            sound.onerror = () => {
+                console.log('Ses dosyası yüklenemedi:', sound.src);
+            };
+        });
     }
 
     play(soundName) {
-        if (this.isMuted || !this.sounds[soundName]) return;
-        
-        // Sesi baştan başlat
-        this.sounds[soundName].currentTime = 0;
-        this.sounds[soundName].play().catch(err => console.log('Ses çalınamadı:', err));
-    }
-
-    startMusic() {
-        if (this.isMuted) return;
-        this.music.play().catch(err => console.log('Müzik başlatılamadı:', err));
-    }
-
-    stopMusic() {
-        this.music.pause();
-        this.music.currentTime = 0;
-    }
-
-    toggleMute() {
-        this.isMuted = !this.isMuted;
-        localStorage.setItem('snakeGameMuted', this.isMuted);
-
-        // UI güncelle
-        document.getElementById('toggleSound').textContent = this.isMuted ? '🔇' : '🔊';
-
-        if (this.isMuted) {
-            this.stopMusic();
-        } else {
-            this.startMusic();
+        const sound = this.sounds[soundName];
+        if (sound) {
+            sound.currentTime = 0;
+            sound.play().catch(error => {
+                console.log('Ses çalma hatası:', error);
+            });
         }
     }
 
-    setVolume(value) {
-        this.volume = parseFloat(value);
-        localStorage.setItem('snakeGameVolume', this.volume);
+    stopBackground() {
+        this.sounds.background.pause();
+        this.sounds.background.currentTime = 0;
+    }
 
-        // Tüm ses seviyelerini güncelle
-        Object.values(this.sounds).forEach(sound => {
-            sound.volume = this.volume;
+    startBackground() {
+        this.sounds.background.play().catch(error => {
+            console.log('Arka plan müziği başlatma hatası:', error);
         });
-        this.music.volume = this.volume * 0.5;
     }
 }
 

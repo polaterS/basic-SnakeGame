@@ -210,31 +210,32 @@ class PowerUpManager {
 }
 
 // Power-up bilgisi için stil ekle
-const style = document.createElement('style');
-style.textContent = `
-#powerUpInfo {
-    position: fixed;
-    top: 70px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    display: none;
-    align-items: center;
-    gap: 10px;
-    z-index: 1000;
-    font-size: 18px;
-}
+const powerUpsStyle = `
+    .power-up {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        animation: pulse 1s infinite;
+    }
 
-.power-up-symbol {
-    font-size: 24px;
-}
+    .power-up.speed {
+        background-color: #ffeb3b;
+    }
 
-.power-up-name {
-    font-weight: 500;
-}
+    .power-up.size {
+        background-color: #4caf50;
+    }
+
+    .power-up.shield {
+        background-color: #2196f3;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
 `;
 
-document.head.appendChild(style); 
+document.getElementById('dynamicStyles').textContent += powerUpsStyle; 

@@ -1,44 +1,37 @@
+const mapStyles = document.getElementById('dynamicStyles');
+
 class MapManager {
     constructor() {
         this.maps = {
-            CLASSIC: {
+            'CLASSIC': {
                 name: 'Klasik',
-                description: 'Engelsiz klasik harita',
-                obstacles: [],
-                background: '#000000',
-                thumbnail: '🟦'
+                thumbnail: '🟩',
+                description: 'Klasik yılan oyunu deneyimi',
+                style: `
+                    .game-board { background-color: #1a1a1a; }
+                    .snake { background-color: #4CAF50; }
+                    .food { background-color: #f44336; }
+                `
             },
-            MAZE: {
-                name: 'Labirent',
-                description: 'Duvarlarla dolu labirent',
-                obstacles: this.generateMazeObstacles(),
-                background: '#1a237e',
-                thumbnail: '🏰'
+            'DESERT': {
+                name: 'Çöl',
+                thumbnail: '🏜️',
+                description: 'Çöl temalı harita',
+                style: `
+                    .game-board { background-color: #ffd700; }
+                    .snake { background-color: #8b4513; }
+                    .food { background-color: #228b22; }
+                `
             },
-            PORTAL: {
-                name: 'Portal',
-                description: 'İki portal arasında ışınlan',
-                obstacles: [],
-                portals: [
-                    { x: 5, y: 5, target: { x: 15, y: 15 }, color: '#ff4081' },
-                    { x: 15, y: 15, target: { x: 5, y: 5 }, color: '#ff4081' }
-                ],
-                background: '#311b92',
-                thumbnail: '🌀'
-            },
-            ISLANDS: {
-                name: 'Adalar',
-                description: 'Su engelleriyle ayrılmış adalar',
-                obstacles: this.generateIslandObstacles(),
-                background: '#01579b',
-                thumbnail: '🏝️'
-            },
-            RANDOM: {
-                name: 'Rastgele',
-                description: 'Her oyunda farklı engeller',
-                obstacles: this.generateRandomObstacles(),
-                background: '#4a148c',
-                thumbnail: '🎲'
+            'OCEAN': {
+                name: 'Okyanus',
+                thumbnail: '🌊',
+                description: 'Su altı temalı harita',
+                style: `
+                    .game-board { background-color: #00bfff; }
+                    .snake { background-color: #ff6b6b; }
+                    .food { background-color: #32cd32; }
+                `
             }
         };
     }
@@ -182,6 +175,13 @@ class MapManager {
 
     getMapInfo(mapName) {
         return this.maps[mapName];
+    }
+
+    applyMapStyle(mapName) {
+        const map = this.maps[mapName];
+        if (map) {
+            mapStyles.textContent = map.style;
+        }
     }
 }
 

@@ -126,75 +126,36 @@ class MobileControls {
     }
 }
 
-// Mobil kontroller için stil ekle
-const style = document.createElement('style');
-style.textContent = `
-.mobile-controls {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    display: none;
-}
-
-@media (max-width: 768px) {
+const mobileControlsStyle = `
     .mobile-controls {
-        display: block;
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 20px;
     }
-}
 
-.d-pad {
-    position: relative;
-    width: 150px;
-    height: 150px;
-}
-
-.d-btn {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    border: none;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.d-btn.active {
-    background: rgba(0, 0, 0, 0.4);
-    transform: scale(0.95);
-}
-
-.d-btn.up {
-    top: 0;
-    left: 50px;
-}
-
-.d-btn.right {
-    right: 0;
-    top: 50px;
-}
-
-.d-btn.down {
-    bottom: 0;
-    left: 50px;
-}
-
-.d-btn.left {
-    left: 0;
-    top: 50px;
-}
-
-@media (max-width: 768px) {
-    #gameScreen {
-        padding-bottom: 180px;
+    @media (max-width: 768px) {
+        .mobile-controls {
+            display: flex;
+        }
     }
-}
+
+    .mobile-controls button {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+    }
 `;
 
-document.head.appendChild(style); 
+document.getElementById('dynamicStyles').textContent += mobileControlsStyle; 
