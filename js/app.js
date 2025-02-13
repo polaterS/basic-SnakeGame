@@ -20,6 +20,10 @@ class App {
         // LeaderboardManager'ı global scope'a ekle
         window.leaderboardManager = this.leaderboardManager;
         
+        // Başlangıçta liderlik tablosunu yükle
+        this.leaderboardManager.loadLeaderboards();
+        this.leaderboardManager.updateLeaderboardDisplay();
+        
         this.game = null;
         
         this.setupEventListeners();

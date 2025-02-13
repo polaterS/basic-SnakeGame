@@ -18,17 +18,36 @@ class LeaderboardManager {
     }
 
     loadLeaderboards() {
-        // LocalStorage'dan liderlik tablolarını yükle
-        const stored = localStorage.getItem('snakeGameLeaderboards');
-        if (stored) {
-            this.leaderboards = JSON.parse(stored);
+        try {
+            const stored = localStorage.getItem('snakeGameLeaderboards');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                this.leaderboards = {
+                    daily: Array.isArray(parsed.daily) ? parsed.daily : [],
+                    weekly: Array.isArray(parsed.weekly) ? parsed.weekly : [],
+                    allTime: Array.isArray(parsed.allTime) ? parsed.allTime : [],
+                    maps: parsed.maps || {}
+                };
+                console.log('Liderlik tablosu yüklendi:', this.leaderboards);
+            }
+        } catch (error) {
+            console.error('Liderlik tablosu yüklenirken hata:', error);
+            this.leaderboards = {
+                daily: [],
+                weekly: [],
+                allTime: [],
+                maps: {}
+            };
         }
     }
 
     saveLeaderboards() {
-        // LocalStorage'a kaydet
-        localStorage.setItem('snakeGameLeaderboards', 
-            JSON.stringify(this.leaderboards));
+        try {
+            localStorage.setItem('snakeGameLeaderboards', JSON.stringify(this.leaderboards));
+            console.log('Liderlik tablosu kaydedildi');
+        } catch (error) {
+            console.error('Liderlik tablosu kaydedilirken hata:', error);
+        }
     }
 
     setupAutoReset() {
@@ -57,12 +76,16 @@ class LeaderboardManager {
     }
 
     addScore(score, username, mapName) {
+        if (!username || !score) return;
+
         const scoreData = {
-            score,
-            username,
+            score: parseInt(score),
+            username: username,
             date: new Date().toISOString(),
-            mapName
+            mapName: mapName || 'CLASSIC'
         };
+
+        console.log('Yeni skor ekleniyor:', scoreData);
 
         // Günlük sıralama
         this.insertScore(this.leaderboards.daily, scoreData);
@@ -74,23 +97,49 @@ class LeaderboardManager {
         this.insertScore(this.leaderboards.allTime, scoreData);
         
         // Harita bazlı sıralama
+        if (!this.leaderboards.maps[mapName]) {
+            this.leaderboards.maps[mapName] = [];
+        }
         this.insertScore(this.leaderboards.maps[mapName], scoreData);
 
+        // LocalStorage'a kaydet
         this.saveLeaderboards();
+        
+        // Liderlik tablosunu güncelle
         this.updateLeaderboardDisplay();
     }
 
     insertScore(leaderboard, scoreData) {
+        if (!Array.isArray(leaderboard)) {
+            leaderboard = [];
+        }
+
         // Maksimum 100 skor tut
         const maxScores = 100;
+        
+        // Aynı kullanıcının daha yüksek skoru varsa güncelle
+        const existingIndex = leaderboard.findIndex(
+            item => item.username === scoreData.username
+        );
+
+        if (existingIndex !== -1) {
+            // Eğer yeni skor daha yüksekse, eskisini güncelle
+            if (scoreData.score > leaderboard[existingIndex].score) {
+                leaderboard.splice(existingIndex, 1);
+            } else {
+                return; // Yeni skor daha düşükse ekleme
+            }
+        }
         
         // Skoru doğru pozisyona ekle
         const insertIndex = leaderboard.findIndex(item => item.score < scoreData.score);
         
-        if (insertIndex === -1 && leaderboard.length < maxScores) {
+        if (insertIndex === -1) {
             // En sona ekle
-            leaderboard.push(scoreData);
-        } else if (insertIndex !== -1) {
+            if (leaderboard.length < maxScores) {
+                leaderboard.push(scoreData);
+            }
+        } else {
             // Araya ekle
             leaderboard.splice(insertIndex, 0, scoreData);
             // Maksimum sayıyı aşmamak için son elemanı sil
