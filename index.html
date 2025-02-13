@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Snake Game</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Kullanıcı Adı Ekranı -->
+    <div id="usernameScreen" class="screen">
+        <div class="container">
+            <h2>Hoş Geldiniz!</h2>
+            <div class="input-group">
+                <input type="text" id="usernameInput" placeholder="Kullanıcı adınız (en az 3 karakter)" minlength="3">
+                <button id="usernameSubmit">Başla</button>
+            </div>
+            <p class="error-message" id="usernameError"></p>
+        </div>
+    </div>
+
+    <!-- Ana Menü -->
+    <div id="mainMenu" class="screen hidden">
+        <div class="container">
+            <div class="user-info">
+                <span id="currentUsername"></span>
+                <button id="themeToggle" class="theme-toggle">🌙</button>
+            </div>
+            <h1>Snake Game</h1>
+            <div class="menu-buttons">
+                <button id="singlePlayerBtn">Tek Oyunculu</button>
+                <button id="multiPlayerBtn">Arkadaşınla Oyna</button>
+                <button id="leaderboardBtn">🏆 Liderlik Tablosu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Çok Oyunculu Menü -->
+    <div id="multiplayerMenu" class="screen hidden">
+        <div class="container">
+            <h2>Çok Oyunculu Mod</h2>
+            <div class="room-controls">
+                <button id="createRoomBtn">Oda Oluştur</button>
+                <div id="roomInfo" class="hidden">
+                    <div class="info-group">
+                        <label>Oda Kodu:</label>
+                        <input type="text" id="roomCode" readonly>
+                        <button class="copy-btn" data-target="roomCode">Kopyala</button>
+                    </div>
+                    <div class="info-group">
+                        <label>Oyun Linki:</label>
+                        <input type="text" id="gameLink" readonly>
+                        <button class="copy-btn" data-target="gameLink">Kopyala</button>
+                    </div>
+                </div>
+                <div id="waitingMessage" class="hidden">
+                    Rakip bekleniyor...
+                </div>
+            </div>
+            <button id="backToMenu" class="back-button">Ana Menüye Dön</button>
+        </div>
+    </div>
+
+    <!-- Harita Seçim Ekranı -->
+    <div id="mapScreen" class="screen hidden">
+        <div class="container">
+            <h2>Harita Seç</h2>
+            <div id="mapSelection" class="map-selection">
+                <!-- Haritalar JavaScript ile eklenecek -->
+            </div>
+            <button id="startGameWithMap" class="primary-button">Oyunu Başlat</button>
+            <button id="backToMenuFromMap" class="back-button">Ana Menüye Dön</button>
+        </div>
+    </div>
+
+    <!-- Oyun Ekranı -->
+    <div id="gameScreen" class="screen hidden">
+        <div class="game-header">
+            <span id="playerInfo"></span>
+            <span id="score">Skor: 0</span>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+        <button id="exitGame" class="exit-button">Oyundan Çık</button>
+    </div>
+
+    <!-- Liderlik Tablosu Ekranı -->
+    <div id="leaderboardScreen" class="screen hidden">
+        <div class="container leaderboard-screen">
+            <h2>Liderlik Tablosu</h2>
+            <div class="leaderboard-controls">
+                <select id="leaderboardType">
+                    <option value="daily">Günlük</option>
+                    <option value="weekly">Haftalık</option>
+                    <option value="allTime">Tüm Zamanlar</option>
+                </select>
+                <select id="leaderboardMap">
+                    <option value="all">Tüm Haritalar</option>
+                    <!-- Haritalar JavaScript ile eklenecek -->
+                </select>
+            </div>
+            <div id="leaderboardContent" class="leaderboard-content">
+                <!-- Skorlar JavaScript ile eklenecek -->
+            </div>
+            <button id="backToMenuFromLeaderboard" class="back-button">Ana Menüye Dön</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/mobile-controls.js"></script>
+    <script src="js/power-ups.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="js/leaderboard.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/user.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/multiplayer.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html> 
