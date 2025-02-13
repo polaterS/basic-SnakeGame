@@ -5,10 +5,11 @@ class Game {
         this.isMultiplayer = isMultiplayer;
         this.peer = peer;
         
-        this.canvas.width = CONFIG.GAME.CANVAS_SIZE;
-        this.canvas.height = CONFIG.GAME.CANVAS_SIZE;
+        // Canvas boyutlarını ayarla
+        this.canvas.width = 600;
+        this.canvas.height = 600;
         
-        this.cellSize = CONFIG.GAME.CANVAS_SIZE / CONFIG.GAME.GRID_SIZE;
+        this.cellSize = this.canvas.width / 20; // 20x20 grid
         this.snake = this.createInitialSnake();
         this.opponent = isMultiplayer ? this.createInitialSnake(true) : null;
         this.food = this.createFood();
@@ -20,6 +21,16 @@ class Game {
         this.gameLoop = null;
         this.lastRenderTime = 0;
         
+        this.colors = {
+            background: '#1a1a1a',
+            snake: {
+                head: '#4CAF50',
+                body: '#388E3C'
+            },
+            food: '#FF5252',
+            grid: 'rgba(255, 255, 255, 0.05)'
+        };
+
         // Power-up yöneticisini başlat
         this.powerUpManager = new PowerUpManager(this);
         
@@ -51,28 +62,41 @@ class Game {
 
     createFood() {
         const food = {
-            x: Math.floor(Math.random() * CONFIG.GAME.GRID_SIZE),
-            y: Math.floor(Math.random() * CONFIG.GAME.GRID_SIZE)
+            x: Math.floor(Math.random() * (this.canvas.width / this.cellSize)),
+            y: Math.floor(Math.random() * (this.canvas.height / this.cellSize))
         };
 
-        // Ensure food doesn't spawn on snake
-        const isOnSnake = this.snake.some(segment => 
-            segment.x === food.x && segment.y === food.y);
-        
-        if (isOnSnake) return this.createFood();
+        // Yılanın üzerine yem gelmesin
+        if (this.snake.some(segment => segment.x === food.x && segment.y === food.y)) {
+            return this.createFood();
+        }
+
         return food;
     }
 
     setupEventListeners() {
         document.addEventListener('keydown', (e) => {
-            if (CONFIG.CONTROLS.UP.includes(e.key) && this.direction !== 'DOWN') {
-                this.direction = 'UP';
-            } else if (CONFIG.CONTROLS.DOWN.includes(e.key) && this.direction !== 'UP') {
-                this.direction = 'DOWN';
-            } else if (CONFIG.CONTROLS.LEFT.includes(e.key) && this.direction !== 'RIGHT') {
-                this.direction = 'LEFT';
-            } else if (CONFIG.CONTROLS.RIGHT.includes(e.key) && this.direction !== 'LEFT') {
-                this.direction = 'RIGHT';
+            switch(e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    if (this.direction !== 'DOWN') this.direction = 'UP';
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    if (this.direction !== 'UP') this.direction = 'DOWN';
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    if (this.direction !== 'RIGHT') this.direction = 'LEFT';
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    if (this.direction !== 'LEFT') this.direction = 'RIGHT';
+                    break;
             }
         });
 
@@ -87,18 +111,10 @@ class Game {
         const head = { ...this.snake[0] };
 
         switch (this.direction) {
-            case 'UP':
-                head.y--;
-                break;
-            case 'DOWN':
-                head.y++;
-                break;
-            case 'LEFT':
-                head.x--;
-                break;
-            case 'RIGHT':
-                head.x++;
-                break;
+            case 'UP': head.y--; break;
+            case 'DOWN': head.y++; break;
+            case 'LEFT': head.x--; break;
+            case 'RIGHT': head.x++; break;
         }
 
         // Mıknatıs efekti
@@ -122,8 +138,8 @@ class Game {
             if (head.y >= CONFIG.GAME.GRID_SIZE) head.y = 0;
         } else {
             // Normal duvar çarpışma kontrolü
-            if (head.x < 0 || head.x >= CONFIG.GAME.GRID_SIZE ||
-                head.y < 0 || head.y >= CONFIG.GAME.GRID_SIZE) {
+            if (head.x < 0 || head.x >= this.canvas.width / this.cellSize ||
+                head.y < 0 || head.y >= this.canvas.height / this.cellSize) {
                 if (window.audioManager) {
                     window.audioManager.play('collision');
                 }
@@ -176,45 +192,80 @@ class Game {
         }
     }
 
+    drawGrid() {
+        this.ctx.strokeStyle = this.colors.grid;
+        this.ctx.lineWidth = 0.5;
+
+        for (let i = 0; i <= this.canvas.width; i += this.cellSize) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(i, 0);
+            this.ctx.lineTo(i, this.canvas.height);
+            this.ctx.stroke();
+        }
+
+        for (let i = 0; i <= this.canvas.height; i += this.cellSize) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, i);
+            this.ctx.lineTo(this.canvas.width, i);
+            this.ctx.stroke();
+        }
+    }
+
     draw() {
-        this.ctx.fillStyle = getComputedStyle(document.documentElement)
-            .getPropertyValue('--bg-color');
+        // Arkaplanı temizle
+        this.ctx.fillStyle = this.colors.background;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Grid çiz
+        this.drawGrid();
 
         // Yılanı çiz
         this.snake.forEach((segment, index) => {
-            this.ctx.fillStyle = this.isGhost ? 
-                `${CONFIG.GAME.SNAKE_COLORS.PLAYER}88` : // Yarı saydam
-                CONFIG.GAME.SNAKE_COLORS.PLAYER;
-            this.ctx.fillRect(
-                segment.x * this.cellSize,
-                segment.y * this.cellSize,
-                this.cellSize - 1,
-                this.cellSize - 1
-            );
+            const radius = this.cellSize / 2;
+            const x = segment.x * this.cellSize + radius;
+            const y = segment.y * this.cellSize + radius;
+
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, radius * 0.8, 0, Math.PI * 2);
+            this.ctx.fillStyle = index === 0 ? this.colors.snake.head : this.colors.snake.body;
+            this.ctx.fill();
+
+            // Gölge efekti
+            this.ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            this.ctx.shadowBlur = 5;
+            this.ctx.shadowOffsetX = 2;
+            this.ctx.shadowOffsetY = 2;
         });
 
         // Rakibi çiz
         if (this.isMultiplayer && this.opponent) {
             this.opponent.forEach(segment => {
+                const radius = this.cellSize / 2;
+                const x = segment.x * this.cellSize + radius;
+                const y = segment.y * this.cellSize + radius;
+
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, radius * 0.8, 0, Math.PI * 2);
                 this.ctx.fillStyle = CONFIG.GAME.SNAKE_COLORS.OPPONENT;
-                this.ctx.fillRect(
-                    segment.x * this.cellSize,
-                    segment.y * this.cellSize,
-                    this.cellSize - 1,
-                    this.cellSize - 1
-                );
+                this.ctx.fill();
             });
         }
 
         // Yemi çiz
-        this.ctx.fillStyle = CONFIG.GAME.FOOD_COLOR;
-        this.ctx.fillRect(
-            this.food.x * this.cellSize,
-            this.food.y * this.cellSize,
-            this.cellSize - 1,
-            this.cellSize - 1
-        );
+        const foodRadius = this.cellSize / 2;
+        const foodX = this.food.x * this.cellSize + foodRadius;
+        const foodY = this.food.y * this.cellSize + foodRadius;
+
+        this.ctx.beginPath();
+        this.ctx.arc(foodX, foodY, foodRadius * 0.6, 0, Math.PI * 2);
+        this.ctx.fillStyle = this.colors.food;
+        this.ctx.fill();
+
+        // Parıltı efekti
+        this.ctx.beginPath();
+        this.ctx.arc(foodX - foodRadius * 0.3, foodY - foodRadius * 0.3, foodRadius * 0.2, 0, Math.PI * 2);
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        this.ctx.fill();
 
         // Power-up'ları çiz
         this.powerUpManager.draw(this.ctx);
@@ -248,7 +299,7 @@ class Game {
 
         const elapsed = currentTime - this.lastRenderTime;
 
-        if (elapsed > CONFIG.GAME.GAME_SPEED) {
+        if (elapsed > 100) { // Oyun hızı (ms)
             this.moveSnake();
             this.draw();
             this.lastRenderTime = currentTime;
