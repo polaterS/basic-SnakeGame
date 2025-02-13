@@ -1,53 +1,25 @@
 class AudioManager {
     constructor() {
-        this.sounds = {
-            button: new Audio('sounds/button.mp3'),
-            eat: new Audio('sounds/eat.mp3'),
-            collision: new Audio('sounds/collision.mp3'),
-            powerup: new Audio('sounds/powerup.mp3'),
-            background: new Audio('sounds/background.mp3')
-        };
-
-        // Arka plan müziği için ayarlar
-        this.sounds.background.loop = true;
-        this.sounds.background.volume = 0.3;
-
-        // Ses efektleri için varsayılan ses seviyesi
-        Object.values(this.sounds).forEach(sound => {
-            if (sound !== this.sounds.background) {
-                sound.volume = 0.5;
-            }
-        });
-
-        // Ses hatalarını yönet
-        Object.values(this.sounds).forEach(sound => {
-            sound.onerror = () => {
-                console.log('Ses dosyası yüklenemedi:', sound.src);
-            };
-        });
+        // Boş constructor
     }
 
     play(soundName) {
-        const sound = this.sounds[soundName];
-        if (sound) {
-            sound.currentTime = 0;
-            sound.play().catch(error => {
-                console.log('Ses çalma hatası:', error);
-            });
-        }
+        // Ses çalma devre dışı
+        return;
     }
 
     stopBackground() {
-        this.sounds.background.pause();
-        this.sounds.background.currentTime = 0;
+        // Arka plan müziği devre dışı
+        return;
     }
 
     startBackground() {
-        this.sounds.background.play().catch(error => {
-            console.log('Arka plan müziği başlatma hatası:', error);
-        });
+        // Arka plan müziği devre dışı
+        return;
     }
 }
+
+window.audioManager = new AudioManager();
 
 // Stil ekle
 const style = document.createElement('style');

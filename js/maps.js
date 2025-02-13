@@ -6,32 +6,17 @@ class MapManager {
             'CLASSIC': {
                 name: 'Klasik',
                 thumbnail: '🟩',
-                description: 'Klasik yılan oyunu deneyimi',
-                style: `
-                    .game-board { background-color: #1a1a1a; }
-                    .snake { background-color: #4CAF50; }
-                    .food { background-color: #f44336; }
-                `
+                description: 'Klasik yılan oyunu deneyimi'
             },
             'DESERT': {
                 name: 'Çöl',
                 thumbnail: '🏜️',
-                description: 'Çöl temalı harita',
-                style: `
-                    .game-board { background-color: #ffd700; }
-                    .snake { background-color: #8b4513; }
-                    .food { background-color: #228b22; }
-                `
+                description: 'Çöl temalı harita'
             },
             'OCEAN': {
                 name: 'Okyanus',
                 thumbnail: '🌊',
-                description: 'Su altı temalı harita',
-                style: `
-                    .game-board { background-color: #00bfff; }
-                    .snake { background-color: #ff6b6b; }
-                    .food { background-color: #32cd32; }
-                `
+                description: 'Su altı temalı harita'
             }
         };
     }
@@ -229,4 +214,7 @@ style.textContent = `
 }
 `;
 
-document.head.appendChild(style); 
+document.head.appendChild(style);
+
+// MapManager'ı global scope'a ekle
+window.MapManager = MapManager; 

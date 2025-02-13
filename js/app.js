@@ -1,16 +1,17 @@
 class App {
     constructor() {
-        this.singlePlayerBtn = document.getElementById('singlePlayerBtn');
-        this.multiPlayerBtn = document.getElementById('multiPlayerBtn');
-        this.leaderboardBtn = document.getElementById('leaderboardBtn');
         this.mainMenu = document.getElementById('mainMenu');
         this.mapScreen = document.getElementById('mapScreen');
         this.multiplayerMenu = document.getElementById('multiplayerMenu');
         this.leaderboardScreen = document.getElementById('leaderboardScreen');
-        this.mapSelection = document.getElementById('mapSelection');
-        this.startGameWithMap = document.getElementById('startGameWithMap');
+        this.gameScreen = document.getElementById('gameScreen');
+        this.singlePlayerBtn = document.getElementById('singlePlayerBtn');
+        this.multiPlayerBtn = document.getElementById('multiPlayerBtn');
+        this.leaderboardBtn = document.getElementById('leaderboardBtn');
         this.backToMenuFromMap = document.getElementById('backToMenuFromMap');
         this.backToMenuFromLeaderboard = document.getElementById('backToMenuFromLeaderboard');
+        this.startGameWithMap = document.getElementById('startGameWithMap');
+        this.mapSelection = document.getElementById('mapSelection');
         
         this.selectedMap = 'CLASSIC';
         this.mapManager = new MapManager();
@@ -24,7 +25,7 @@ class App {
     setupEventListeners() {
         if (this.singlePlayerBtn) {
             this.singlePlayerBtn.addEventListener('click', () => {
-                console.log('Tek Oyunculu butonuna tıklandı');
+                console.log('Tek oyunculu moda geçiliyor...');
                 this.mainMenu.classList.add('hidden');
                 this.mapScreen.classList.remove('hidden');
                 if (window.audioManager) {
@@ -35,7 +36,7 @@ class App {
 
         if (this.multiPlayerBtn) {
             this.multiPlayerBtn.addEventListener('click', () => {
-                console.log('Çok Oyunculu butonuna tıklandı');
+                console.log('Çok oyunculu moda geçiliyor...');
                 this.mainMenu.classList.add('hidden');
                 this.multiplayerMenu.classList.remove('hidden');
                 if (window.audioManager) {
@@ -46,7 +47,7 @@ class App {
 
         if (this.leaderboardBtn) {
             this.leaderboardBtn.addEventListener('click', () => {
-                console.log('Liderlik Tablosu butonuna tıklandı');
+                console.log('Liderlik tablosuna geçiliyor...');
                 this.mainMenu.classList.add('hidden');
                 this.leaderboardScreen.classList.remove('hidden');
                 this.leaderboardManager.updateLeaderboardDisplay();
@@ -60,7 +61,8 @@ class App {
             this.startGameWithMap.addEventListener('click', () => {
                 console.log('Oyun başlatılıyor...');
                 this.mapScreen.classList.add('hidden');
-                const game = new Game(false, null, this.selectedMap);
+                this.gameScreen.classList.remove('hidden');
+                const game = new Game();
                 game.start();
                 if (window.audioManager) {
                     window.audioManager.play('button');
