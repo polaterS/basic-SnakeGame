@@ -1,7 +1,5 @@
 class ThemeManager {
     constructor() {
-        this.themeToggleBtn = document.getElementById('themeToggle');
-        this.gameThemeToggleBtn = document.getElementById('gameThemeToggle');
         this.currentTheme = localStorage.getItem(CONFIG.STORAGE_KEYS.THEME) || 'light';
         this.init();
     }
@@ -9,29 +7,51 @@ class ThemeManager {
     init() {
         this.applyTheme();
         this.setupEventListeners();
+        
+        // DOM değişikliklerini izle
+        this.observeDOM();
     }
 
     setupEventListeners() {
         // Ana menüdeki tema butonu
-        this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'themeToggle' || e.target.id === 'gameThemeToggle') {
+                this.toggleTheme();
+            }
+        });
+    }
+
+    observeDOM() {
+        // DOM değişikliklerini izle
+        const observer = new MutationObserver(() => {
+            this.updateButtons();
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    updateButtons() {
+        const icon = this.currentTheme === 'light' ? '🌙' : '☀️';
         
-        // Oyun ekranındaki tema butonu
-        if (this.gameThemeToggleBtn) {
-            this.gameThemeToggleBtn.addEventListener('click', () => this.toggleTheme());
+        // Ana menü butonu
+        const mainButton = document.getElementById('themeToggle');
+        if (mainButton) {
+            mainButton.textContent = icon;
+        }
+
+        // Oyun ekranı butonu
+        const gameButton = document.getElementById('gameThemeToggle');
+        if (gameButton) {
+            gameButton.textContent = icon;
         }
     }
 
     applyTheme() {
         document.documentElement.setAttribute('data-theme', this.currentTheme);
-        
-        // Ana menü butonu güncelle
-        this.themeToggleBtn.textContent = this.currentTheme === 'light' ? '🌙' : '☀️';
-        
-        // Oyun ekranı butonu güncelle
-        if (this.gameThemeToggleBtn) {
-            this.gameThemeToggleBtn.textContent = this.currentTheme === 'light' ? '🌙' : '☀️';
-        }
-        
+        this.updateButtons();
         localStorage.setItem(CONFIG.STORAGE_KEYS.THEME, this.currentTheme);
     }
 
