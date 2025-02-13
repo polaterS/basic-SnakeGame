@@ -237,6 +237,24 @@ button:active {
     border-radius: 15px;
     margin-bottom: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.game-header .theme-toggle {
+    position: static;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    margin-left: 1rem;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.game-header .theme-toggle:hover {
+    transform: rotate(360deg);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
 }
 
 .game-header span {
@@ -311,6 +329,11 @@ button:active {
 
     .game-header span {
         font-size: 1rem;
+    }
+
+    .game-header .theme-toggle {
+        font-size: 1.2rem;
+        padding: 0.3rem;
     }
 }
 
