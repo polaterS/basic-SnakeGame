@@ -32,6 +32,7 @@ class Game {
         };
 
         this.setupEventListeners();
+        this.setupGameOverListeners();
     }
 
     createInitialSnake() {
@@ -84,6 +85,23 @@ class Game {
 
         document.getElementById('exitGame').addEventListener('click', () => {
             this.stop();
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+        });
+    }
+
+    setupGameOverListeners() {
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const backToMenuBtn = document.getElementById('backToMenuBtn');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+
+        playAgainBtn.addEventListener('click', () => {
+            gameOverScreen.classList.remove('visible');
+            this.resetGame();
+        });
+
+        backToMenuBtn.addEventListener('click', () => {
+            gameOverScreen.classList.remove('visible');
             document.getElementById('gameScreen').classList.add('hidden');
             document.getElementById('mainMenu').classList.remove('hidden');
         });
@@ -233,10 +251,24 @@ class Game {
         }
     }
 
+    resetGame() {
+        this.snake = this.createInitialSnake();
+        this.food = this.createFood();
+        this.direction = 'RIGHT';
+        this.score = 0;
+        this.lastRenderTime = 0;
+        document.getElementById('score').textContent = 'Skor: 0';
+        this.start();
+    }
+
     gameOver() {
         this.stop();
-        alert(`Oyun bitti! Skorunuz: ${this.score}`);
-        document.getElementById('gameScreen').classList.add('hidden');
-        document.getElementById('mainMenu').classList.remove('hidden');
+        
+        // Oyun bitti ekranını göster
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScore = document.getElementById('finalScore');
+        
+        finalScore.textContent = `Skorunuz: ${this.score}`;
+        gameOverScreen.classList.add('visible');
     }
 } 
