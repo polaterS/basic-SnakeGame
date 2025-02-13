@@ -114,46 +114,51 @@ class LeaderboardManager {
             leaderboard = [];
         }
 
-        // Maksimum 100 skor tut
-        const maxScores = 100;
-        
-        // Aynı kullanıcının daha yüksek skoru varsa güncelle
+        // Aynı kullanıcının önceki skorunu bul
         const existingIndex = leaderboard.findIndex(
             item => item.username === scoreData.username
         );
 
+        // Eğer kullanıcının önceki skoru varsa
         if (existingIndex !== -1) {
-            // Eğer yeni skor daha yüksekse, eskisini güncelle
+            // Yeni skor daha yüksekse güncelle, değilse işlem yapma
             if (scoreData.score > leaderboard[existingIndex].score) {
                 leaderboard.splice(existingIndex, 1);
             } else {
                 return; // Yeni skor daha düşükse ekleme
             }
         }
-        
-        // Skoru doğru pozisyona ekle
-        const insertIndex = leaderboard.findIndex(item => item.score < scoreData.score);
+
+        // Yeni skoru sıralı şekilde ekle
+        const insertIndex = leaderboard.findIndex(item => scoreData.score > item.score);
         
         if (insertIndex === -1) {
             // En sona ekle
-            if (leaderboard.length < maxScores) {
-                leaderboard.push(scoreData);
-            }
+            leaderboard.push(scoreData);
         } else {
             // Araya ekle
             leaderboard.splice(insertIndex, 0, scoreData);
-            // Maksimum sayıyı aşmamak için son elemanı sil
-            if (leaderboard.length > maxScores) {
-                leaderboard.pop();
-            }
         }
+
+        // Maksimum 100 skor tut
+        if (leaderboard.length > 100) {
+            leaderboard.length = 100;
+        }
+
+        // Skorları yüksekten düşüğe sırala
+        leaderboard.sort((a, b) => b.score - a.score);
     }
 
     getLeaderboard(type, mapName = null) {
+        let scores;
         if (mapName) {
-            return this.leaderboards.maps[mapName] || [];
+            scores = this.leaderboards.maps[mapName] || [];
+        } else {
+            scores = this.leaderboards[type] || [];
         }
-        return this.leaderboards[type] || [];
+
+        // Skorları yüksekten düşüğe sırala
+        return [...scores].sort((a, b) => b.score - a.score);
     }
 
     updateLeaderboardDisplay() {
@@ -169,6 +174,9 @@ class LeaderboardManager {
         } else {
             scores = this.getLeaderboard('maps', selectedMap);
         }
+
+        // Skorları yüksekten düşüğe sırala
+        scores.sort((a, b) => b.score - a.score);
 
         if (scores.length === 0) {
             leaderboardElement.innerHTML = '<div class="no-scores">Henüz skor yok</div>';
