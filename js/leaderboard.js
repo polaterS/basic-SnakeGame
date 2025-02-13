@@ -157,8 +157,19 @@ class LeaderboardManager {
             scores = this.leaderboards[type] || [];
         }
 
-        // Skorları yüksekten düşüğe sırala
-        return [...scores].sort((a, b) => b.score - a.score);
+        // Her kullanıcının en yüksek skorunu bul
+        const userHighScores = new Map();
+        
+        scores.forEach(score => {
+            const existingScore = userHighScores.get(score.username);
+            if (!existingScore || score.score > existingScore.score) {
+                userHighScores.set(score.username, score);
+            }
+        });
+
+        // Map'ten array'e çevir ve sırala
+        return Array.from(userHighScores.values())
+            .sort((a, b) => b.score - a.score);
     }
 
     updateLeaderboardDisplay() {
@@ -174,9 +185,6 @@ class LeaderboardManager {
         } else {
             scores = this.getLeaderboard('maps', selectedMap);
         }
-
-        // Skorları yüksekten düşüğe sırala
-        scores.sort((a, b) => b.score - a.score);
 
         if (scores.length === 0) {
             leaderboardElement.innerHTML = '<div class="no-scores">Henüz skor yok</div>';
