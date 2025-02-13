@@ -2,6 +2,8 @@
 
 Modern ve çok oyunculu bir yılan oyunu uygulaması. WebRTC teknolojisi kullanılarak peer-to-peer bağlantı ile arkadaşlarınızla oynayabilirsiniz.
 
+[![Hemen Oyna](https://img.shields.io/badge/HEMEN%20OYNA-brightgreen?style=for-the-badge)](https://polaterS.github.io/basic-SnakeGame/)
+
 ## Özellikler
 
 - 🎮 Tek oyunculu mod
@@ -49,12 +51,12 @@ Modern ve çok oyunculu bir yılan oyunu uygulaması. WebRTC teknolojisi kullan�
 
 1. Projeyi klonlayın:
    ```bash
-   git clone https://github.com/yourusername/snake-game.git
+   git clone https://github.com/polaterS/basic-SnakeGame.git
    ```
 
 2. Proje dizinine gidin:
    ```bash
-   cd snake-game
+   cd basic-SnakeGame
    ```
 
 3. Bir web sunucusu ile çalıştırın (örneğin Python ile):
